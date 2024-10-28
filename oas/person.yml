@@ -5,7 +5,8 @@ info:
   version: 1.0.0
 
 servers:
-  - url: /api/v1
+  - url: http://api-le.e-fullstack.net
+  - url: http://api.e-fullstack.net
 
 paths:
   /persons:
@@ -305,6 +306,18 @@ components:
         profilePhotoUrl:
           type: string
           format: uri
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressCreate'
+        contactInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactInfoCreate'
+        socialMediaAccount:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialMediaCreate'
 
     Address:
       type: object
@@ -375,6 +388,15 @@ components:
       properties:
         id:
           type: integer
+        platform:
+          type: string
+        handle:
+          type: string
+    
+    SocialMediaCreate:
+      type: object
+      required: [platform, handle]
+      properties:
         platform:
           type: string
         handle:

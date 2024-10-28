@@ -1,3 +1,18 @@
 spring:
   application:
     name: crud-operation
+  webflux:
+    problemdetails:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/person
+    username: root
+    password: root
+
+logging:
+  level:
+    web: debug
+    org:
+      springframework:
+        jdbc: DEBUG
+

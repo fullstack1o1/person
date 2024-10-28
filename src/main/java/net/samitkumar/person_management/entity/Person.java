@@ -28,7 +28,7 @@ public class Person {
     Set<ContactInfo> contactInfo;
 
     @MappedCollection(idColumn = "person_id")
-    Set<SocialMedia> socialMedia;
+    Set<SocialMedia> socialMediaAccount;
 
     @ReadOnlyProperty
     LocalDateTime createdAt;

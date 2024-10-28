@@ -1,0 +1,78 @@
+@HOST=http://localhost:8080
+
+### GET request to example server
+GET {{HOST}}/persons
+
+###
+POST {{HOST}}/persons
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "profilePhotoUrl": "/images/john.png",
+  "birthDate": "1990-01-01"
+}
+
+###
+POST {{HOST}}/persons
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "profilePhotoUrl": "/images/jane.png",
+  "birthDate": "1990-01-01",
+  "address": [
+    {
+      "addressType": "OTHER",
+      "street": "string",
+      "city": "string",
+      "state": "string",
+      "zipCode": "string",
+      "country": "string"
+    }
+  ],
+  "contactInfo": [
+    {
+      "contactInfoType": "WORK",
+      "email": "user@work.com",
+      "phoneNumber": "string"
+    }
+  ],
+  "socialMediaAccount": [
+    {
+      "platform": "X",
+      "handle": "string"
+    }
+  ]
+}
+
+###
+GET {{HOST}}/persons/1
+
+###
+PUT {{HOST}}/persons/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "profilePhotoUrl": "/images/john.png",
+  "birthDate": "1990-01-02"
+}
+
+###
+PATCH {{HOST}}/persons/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "birthDate": "1990-01-03"
+}
+
+###
+DELETE {{HOST}}/persons/1
