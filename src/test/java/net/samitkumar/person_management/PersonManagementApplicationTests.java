@@ -1,23 +1,22 @@
-package net.samitkumar.crudoperation;
+package net.samitkumar.person_management;
 
-import net.samitkumar.crudoperation.entity.Address;
-import net.samitkumar.crudoperation.entity.Person;
-import net.samitkumar.crudoperation.repository.PersonRepository;
-import org.junit.jupiter.api.Assertions;
+import net.samitkumar.person_management.entity.Address;
+import net.samitkumar.person_management.entity.ContactInfo;
+import net.samitkumar.person_management.entity.Person;
+import net.samitkumar.person_management.repository.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest
-class CrudOperationApplicationTests {
+class PersonManagementApplicationTests {
 
 	@Autowired
 	PersonRepository personRepository;
@@ -39,12 +38,31 @@ class CrudOperationApplicationTests {
 									.profilePhotoUrl("/home/photo/p1.png")
 									.address(Set.of(
 											Address.builder()
-													.type(Address.AddressType.HOME)
+													.addressType(Address.AddressType.HOME)
 													.country("India")
 													.city("Delhi")
 													.street("Khau Gali")
 													.state("UP")
 													.zipCode("700000")
+													.build(),
+											Address.builder()
+													.addressType(Address.AddressType.WORK)
+													.country("Europe")
+													.city("Kobenhagen")
+													.street("Middle Fart")
+													.zipCode("1200")
+													.build()
+									))
+									.contactInfo(Set.of(
+											ContactInfo.builder()
+													.contactInfoType(ContactInfo.ContactInfoType.PERSONAL)
+													.email("unknown@unknown.net")
+													.phoneNumber("31323334")
+													.build(),
+											ContactInfo.builder()
+													.contactInfoType(ContactInfo.ContactInfoType.WORK)
+													.email("unknown@abc.net")
+													.phoneNumber("31323334")
 													.build()
 									))
 									.build()

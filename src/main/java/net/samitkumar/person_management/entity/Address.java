@@ -1,4 +1,4 @@
-package net.samitkumar.crudoperation.entity;
+package net.samitkumar.person_management.entity;
 
 
 import lombok.Builder;
@@ -10,7 +10,7 @@ import org.springframework.data.annotation.Id;
 public class Address {
     @Id
     Long id;
-    AddressType type;
+    AddressType addressType;
     Long personId; //Reference Key
     String street;
     String city;
@@ -18,5 +18,5 @@ public class Address {
     String zipCode;
     String country;
 
-    public enum AddressType {HOME, WORK}
+    public enum AddressType { HOME, WORK, OTHER }
 }

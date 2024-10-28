@@ -1,13 +1,12 @@
-package net.samitkumar.crudoperation;
+package net.samitkumar.person_management;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CrudOperationApplication {
+public class PersonManagementApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CrudOperationApplication.class, args);
+		SpringApplication.run(PersonManagementApplication.class, args);
 	}
-
 }

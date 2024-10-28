@@ -1,0 +1,381 @@
+openapi: 3.0.3
+info:
+  title: Person Management API
+  description: API for managing people, addresses, contact info, and social media accounts
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+
+paths:
+  /persons:
+    get:
+      summary: Get all persons
+      responses:
+        '200':
+          description: List of persons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+
+    post:
+      summary: Create a new person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonCreate'
+      responses:
+        '201':
+          description: Person created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+
+  /persons/{personId}:
+    get:
+      summary: Get a person by ID
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Person details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '404':
+          description: Person not found
+
+    put:
+      summary: Update a person by ID
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonCreate'
+      responses:
+        '200':
+          description: Person updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '404':
+          description: Person not found
+
+    delete:
+      summary: Delete a person by ID
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Person deleted successfully
+        '404':
+          description: Person not found
+
+  /persons/{personId}/addresses:
+    get:
+      summary: Get all addresses for a person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of addresses for a person
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+
+    post:
+      summary: Create an address for a person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressCreate'
+      responses:
+        '201':
+          description: Address created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '409':
+          description: Duplicate address type for the person
+
+  /persons/{personId}/addresses/{addressId}:
+    get:
+      summary: Get an address by ID for a person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Address details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '404':
+          description: Address not found
+
+    put:
+      summary: Update an address by ID for a person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressCreate'
+      responses:
+        '200':
+          description: Address updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '404':
+          description: Address not found
+        '409':
+          description: Duplicate address type for the person
+
+    delete:
+      summary: Delete an address by ID for a person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Address deleted successfully
+        '404':
+          description: Address not found
+
+  /persons/{personId}/contact-info:
+    get:
+      summary: Get all contact information for a person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of contact information for a person
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContactInfo'
+
+    post:
+      summary: Create contact information for a person
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInfoCreate'
+      responses:
+        '201':
+          description: Contact information created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactInfo'
+        '409':
+          description: Duplicate contact information type for the person
+
+# Define schemas for each entity
+components:
+  schemas:
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        profilePhotoUrl:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        contactInfos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactInfo'
+        socialMediaAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialMedia'
+
+    PersonCreate:
+      type: object
+      required: [firstName, lastName]
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        profilePhotoUrl:
+          type: string
+          format: uri
+
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+        addressType:
+          type: string
+          enum: [HOME, WORK, OTHER]
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipCode:
+          type: string
+        country:
+          type: string
+
+    AddressCreate:
+      type: object
+      required: [addressType, street, city, country]
+      properties:
+        addressType:
+          type: string
+          enum: [HOME, WORK, OTHER]
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipCode:
+          type: string
+        country:
+          type: string
+
+    ContactInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        contactInfoType:
+          type: string
+          enum: [PERSONAL, WORK, HOME]
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+
+    ContactInfoCreate:
+      type: object
+      required: [contactInfoType]
+      properties:
+        contactInfoType:
+          type: string
+          enum: [PERSONAL, WORK, HOME]
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+
+    SocialMedia:
+      type: object
+      properties:
+        id:
+          type: integer
+        platform:
+          type: string
+        handle:
+          type: string

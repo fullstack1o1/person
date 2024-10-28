@@ -1,9 +1,10 @@
-package net.samitkumar.crudoperation.entity;
+package net.samitkumar.person_management.entity;
 
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class Person {
     LocalDate birthDate;
     String profilePhotoUrl;
     @MappedCollection(idColumn = "person_id")
+    @InsertOnlyProperty
     Set<Address> address;
 
     @MappedCollection(idColumn = "person_id")
