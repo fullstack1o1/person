@@ -1,6 +1,6 @@
 spring:
   application:
-    name: crud-operation
+    name: person-crud-api
   webflux:
     problemdetails:
       enabled: true
@@ -11,7 +11,7 @@ spring:
 
 logging:
   level:
-    web: debug
+    web: INFO
     org:
       springframework:
         jdbc: DEBUG
