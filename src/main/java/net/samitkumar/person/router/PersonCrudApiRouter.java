@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 @Configuration
 @Slf4j
-public class PersonManagementRouter {
+public class PersonCrudApiRouter {
 
     @Bean
     RouterFunction<ServerResponse> routes(PersonHandler personHandler, AddressHandler addressHandler, ContactInfoHandler contactInfoHandler, SocialMediaHandler socialMediaHandler) {
@@ -38,12 +38,12 @@ public class PersonManagementRouter {
                                 .DELETE("/{addressId}", addressHandler::deleteAddress)
                         )
                         .path("/{personId}/contact-info", contactInfoBuilder -> contactInfoBuilder
-                                .GET("", request -> ServerResponse.noContent().build())
-                                .POST("", request -> ServerResponse.noContent().build())
-                                .GET("/{contactInfoId}", request -> ServerResponse.noContent().build())
-                                .PUT("/{contactInfoId}", request -> ServerResponse.noContent().build())
-                                .PATCH("/{contactInfoId}", request -> ServerResponse.noContent().build())
-                                .DELETE("/{contactInfoId}", request -> ServerResponse.noContent().build())
+                                .GET("", contactInfoHandler::getPersonContactInfo)
+                                .POST("", contactInfoHandler::createContactInfo)
+                                .GET("/{contactInfoId}", contactInfoHandler::getContactInfo)
+                                .PUT("/{contactInfoId}", contactInfoHandler::updateContactInfo)
+                                .PATCH("/{contactInfoId}", contactInfoHandler::partialUpdateContactInfo)
+                                .DELETE("/{contactInfoId}", contactInfoHandler::deleteContactInfo)
                         )
                         .path("/{personId}/social-media", socialMediaBuilder -> socialMediaBuilder
                                 .GET("", request -> ServerResponse.noContent().build())

@@ -1,0 +1,45 @@
+@HOST=http://localhost:8080
+@PERSON_ID=1
+
+### GET request to example server
+GET {{HOST}}/persons/{{PERSON_ID}}/contact-info
+
+###
+POST {{HOST}}/persons/{{PERSON_ID}}/contact-info
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactInfoType": "PERSONAL",
+  "email": "user@example.com",
+  "phoneNumber": "123456789"
+}
+
+###
+GET {{HOST}}/persons/{{PERSON_ID}}/contact-info/1
+
+###
+PUT {{HOST}}/persons/{{PERSON_ID}}/contact-info/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "contactInfoType": "WORK",
+  "personId": 1,
+  "email": "user@work.com",
+  "phoneNumber": "1212121"
+}
+
+###
+PATCH {{HOST}}/persons/{{PERSON_ID}}/contact-info/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactInfoType": "HOME"
+}
+
+
+###
+DELETE {{HOST}}/persons/{{PERSON_ID}}/contact-info/1
