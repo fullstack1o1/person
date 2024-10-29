@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest
 @AutoConfigureWebTestClient
-class PersonCrudApiApplicationTests {
+class PersonApplicationTests {
 
 	@Autowired
 	WebTestClient webTestClient;

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: person-crud-api
+    name: person
   webflux:
     problemdetails:
       enabled: true

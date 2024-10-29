@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 @Configuration
 @Slf4j
-public class PersonCrudApiRouter {
+public class PersonRouter {
 
     @Bean
     RouterFunction<ServerResponse> routes(PersonHandler personHandler, AddressHandler addressHandler, ContactInfoHandler contactInfoHandler, SocialMediaHandler socialMediaHandler) {

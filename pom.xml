@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>net.samitkumar</groupId>
-	<artifactId>person-crud-api</artifactId>
+	<artifactId>person</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>person-crud-api</name>
+	<name>person</name>
 	<description>Person CRUD Operation With Spring Boot</description>
 	<url/>
 	<licenses>
