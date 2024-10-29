@@ -1,0 +1,47 @@
+@HOST=http://localhost:8080
+@PERSON_ID=1
+
+
+### GET
+GET {{HOST}}//persons/{{PERSON_ID}}/addresses
+
+###
+POST {{HOST}}//persons/{{PERSON_ID}}/addresses
+Content-Type: application/json
+Accept: application/json
+
+{
+  "addressType": "HOME",
+  "street": "abc street",
+  "city": "NY",
+  "zipCode": "123-4",
+  "country": "USA"
+}
+
+###
+GET {{HOST}}//persons/{{PERSON_ID}}/addresses/1
+
+###
+PUT {{HOST}}//persons/{{PERSON_ID}}/addresses/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "addressType": "OTHER",
+  "street": "abc street",
+  "city": "NY",
+  "zipCode": "123-4",
+  "country": "USA"
+}
+
+###
+PATCH {{HOST}}//persons/{{PERSON_ID}}/addresses/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "addressType": "HOME"
+}
+
+###
+DELETE {{HOST}}//persons/{{PERSON_ID}}/addresses/1

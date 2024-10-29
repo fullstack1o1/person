@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -16,10 +15,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class PersonManagementRouter {
 
     @Bean
-    RouterFunction<ServerResponse> routes(PersonHandler personHandler,
-                                          AddressHandler addressHandler,
-                                          ContactInfoHandler contactInfoHandler,
-                                          SocialMediaHandler socialMediaHandler) {
+    RouterFunction<ServerResponse> routes(PersonHandler personHandler, AddressHandler addressHandler, ContactInfoHandler contactInfoHandler, SocialMediaHandler socialMediaHandler) {
         return RouterFunctions
                 .route()
                 .before(request -> {
@@ -34,12 +30,12 @@ public class PersonManagementRouter {
                         .PATCH("/{personId}", personHandler::partialUpdatePerson)
                         .DELETE("/{personId}", personHandler::deletePerson)
                         .path("/{personId}/addresses", addressBuilder -> addressBuilder
-                                .GET("", request -> ServerResponse.noContent().build())
-                                .POST("", request -> ServerResponse.noContent().build())
-                                .GET("/{addressId}", request -> ServerResponse.noContent().build())
-                                .PUT("/{addressId}", request -> ServerResponse.noContent().build())
-                                .PATCH("/{addressId}", request -> ServerResponse.noContent().build())
-                                .DELETE("/{addressId}", request -> ServerResponse.noContent().build())
+                                .GET("", addressHandler::getPersonAddress)
+                                .POST("", addressHandler::createAddress)
+                                .GET("/{addressId}", addressHandler::getAddressById)
+                                .PUT("/{addressId}", addressHandler::updateAddress)
+                                .PATCH("/{addressId}", addressHandler::partialUpdateAddress)
+                                .DELETE("/{addressId}", addressHandler::deleteAddress)
                         )
                         .path("/{personId}/contact-info", contactInfoBuilder -> contactInfoBuilder
                                 .GET("", request -> ServerResponse.noContent().build())

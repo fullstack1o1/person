@@ -5,8 +5,10 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Optional;
 
 public interface AddressRepository extends ListCrudRepository<Address, Long>, ListPagingAndSortingRepository<Address, Long> {
-    Set<Address> findByPersonId(@Param("personId") Long personId);
+    List<Address> findByPersonId(@Param("personId") Long personId);
+    Optional<Address> findByPersonIdAndId(@Param("personId") Long personId, @Param("id") Long id);
 }
