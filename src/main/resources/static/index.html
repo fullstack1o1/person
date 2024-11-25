@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person</title>
+    <style>
+        body {
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+            font-family: Arial, sans-serif;
+        }
+        
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        
+        #person__container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #person__new__addresses, 
+        #person__new__contactinformations, 
+        #person__new__socialmedia {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        span.icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            margin: 10px;
+        }
+
+        span.icon:hover {
+            cursor: pointer;
+            background-color: blue;
+            color: #fff;
+        }
+
+        #person__new__basicinformation, 
+        #person__new__contactinformations, 
+        #person__new__addresses, #person__new__socialmedia, #person__new__submit {
+            margin-top: 20px;
+        }
+
+        #person__new__submit button {
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    
+
+    <div id="app">
+        <h3>{{ title }}</h3>
+        <hr/>
+        
+        <div id="person__container">
+            <div id="person__control_center">
+                <label>
+                    <button type="button">+ New Person</button>
+                </label>
+            </div>
+            <div id="person__new">
+                <form @submit.prevent="() => console.log('not implemented')">
+
+                    <div id="person__new__basicinformation">
+                        <fieldset>
+                            <legend>Basic Information</legend>
+                            <label for="firstname">Firstname</label>
+                            <input id="firstname" type="text" placeholder="First Name" />
+                            
+                            <label for="lastname">Lastname</label>
+                            <input id="lastname" type="text" placeholder="Last Name" />
+
+                            <label for="birthdate">Birth Date</label>
+                            <input id="birthdate" type="date" />
+
+                            <label for="profile__photo">Profile Photo</label>
+                            <input id="profile__photo" type="file" />
+                        </fieldset>
+                    </div>
+
+                    <div id="person__new__contactinformations">
+                        <div :id="'person__new__contactinformation-'+contact" v-for="contact in [1]">
+                            <fieldset>
+                                <legend>Contact Information</legend>
+    
+                                <label :for="'contactInfoType-'+contact">Contact Info Type</label>
+                                <select :id="'contactInfoType-'+contact">
+                                    <option value="PERSONAL">Personal</option>
+                                    <option value="WORK">Work</option>
+                                    <option value="HOME">Home</option>
+                                </select>
+    
+                                <label :for="'email-'+contact">Email</label>
+                                <input :id="'email-'+contact" type="email" placeholder="Email" />
+                                
+                                <label :for="'phone-'+contact">Phone</label>
+                                <input :id="'phone-'+contact" type="tel" placeholder="Phone" />    
+                            </fieldset>
+                        </div>
+                        <span class="icon">+</span>
+                    </div>
+                    
+                    <div id="person__new__addresses">
+                        <div :id="'person__new__address-'+addr" v-for="addr in [1]">
+                            <fieldset>
+                                <legend>Address</legend>
+                                <label :for="'address-'+addr">Address Type</label>
+                                <select :id="'address-'+addr">
+                                    <option value="HOME">Home</option>
+                                    <option value="WORK">Work</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+    
+                                <label :for="'street-'+addr">Street</label>
+                                <input :id="'street-'+addr" type="text" placeholder="Street" />
+    
+                                <label :for="'city-'+addr">City</label>
+                                <input :id="'city-'+addr" type="text" placeholder="City" />
+    
+                                <label :for="'state-'+addr">State</label>
+                                <input :id="'state-'+addr" type="text" placeholder="State" />
+    
+                                <label :for="'zip-'+addr">Zip</label>
+                                <input :id="'zip-'+addr" type="text" placeholder="Zip" />
+    
+                                <label :for="'country-'+addr">Country</label>
+                                <input :id="'country-'+addr" type="text" placeholder="Country" />
+                            </fieldset>
+                                 
+
+                        </div>
+                        <span class="icon">+</span>
+                    </div>
+                    
+                    
+                    <div id="person__new__socialmedia">
+                        <div id="person__new__social" v-for="social in [1]">
+                            <fieldset>
+                                <legend>Social Media</legend>
+                                <label :for="'socialType-'+social">Platform</label>
+                                <select :id="'socialType-'+social">
+                                    <option value="FACEBOOK">Facebook</option>
+                                    <option value="TWITTER">Twitter</option>
+                                    <option value="INSTAGRAM">Instagram</option>
+                                    <option value="LINKEDIN">LinkedIn</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+    
+                                <label :for="'social-'+social">Handle</label>
+                                <input :id="'social-'+social" type="text" placeholder="Social" />
+                            </fieldset>
+                        </div>
+                        <span class="icon">+</span>
+                    </div>
+
+                    <div id="person__new__submit">
+                        <button type="submit">Save</button>
+                        <button type="reset">Reset</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="person__all"></div>
+        </div>
+        
+        
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const { createApp, ref } = Vue
+
+        createApp({
+            setup() {
+            const title = ref('Person Administration')
+            return {
+                title
+            }
+            }
+        }).mount('#app')
+    </script>
+    
+</body>
+</html>
