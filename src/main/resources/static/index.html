@@ -8,18 +8,33 @@
         body {
             margin-left: auto;
             margin-right: auto;
-            width: 50%;
-            font-family: Arial, sans-serif;
+            width: 80%;
         }
         
         label {
             display: block;
             margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        legend {
+            font-size: 0.9em;
+            color: gray;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            padding: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
         
         #person__container {
             display: flex;
-            flex-direction: column;
         }
 
         #person__new__addresses, 
@@ -58,139 +73,318 @@
             border-radius: 5px;
         }
 
+        .form__row {
+            display: flex;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .form__column {
+            margin-right: 5px;
+        }
+        /* Style the tab */
+        .tab {
+            float: left;
+            outline: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: 0.3s;
+            margin-right: 5px;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+        }
+
+        .tab:hover {
+            float: left;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            transition: 0.3s;
+            margin-right: 5px;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            background-color: #f0f0f0;
+            width: 50px;
+        }
+        
+        .tab__selected {
+            float: left;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            transition: 0.3s;
+            margin-right: 5px;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            background-color: #f0f0f0;
+            width: 50px;
+        }
+
     </style>
 </head>
 <body>
-    
-
     <div id="app">
         <h3>{{ title }}</h3>
         <hr/>
         
         <div id="person__container">
-            <div id="person__control_center">
-                <label>
-                    <button type="button">+ New Person</button>
-                </label>
-            </div>
-            <div id="person__new">
-                <form @submit.prevent="() => console.log('not implemented')">
+            <div :class="currentTab === tab ? 'tab tab__selected' : 'tab' " @click="currentTab = tab" v-for="(_ ,tab) in tabs">{{ tab }}</div>
+        </div>
+        <component :is="tabs[currentTab]"></component>
+    </div>
+    
+    <template id="all__person__template">
+        <h1>Hello</h1>
+    </template>
+    
+    <template id="new__person__template">
+        <div id="person__new">
+            <form @submit.prevent="savePerson">
 
-                    <div id="person__new__basicinformation">
+                <div id="person__new__basicinformation">
+                    <fieldset>
+                        <legend>Basic Information</legend>
+                        
+                        <div class="form__row">
+                            <div class="form__column">
+                                <label for="firstname">Firstname</label>
+                                <input id="firstname" type="text" placeholder="First Name" v-model="person.firstName" />
+                            </div>
+                            <div class="form__column">
+                                <label for="lastname">Lastname</label>
+                                <input id="lastname" type="text" placeholder="Last Name" v-model="person.lastName"/>
+                            </div>
+                        </div>
+        
+                        <div class="form__row">
+                            <div class="form__column">
+                                <label for="birthdate">Birth Date</label>
+                                <input id="birthdate" type="date" v-model="person.birthDate"/>
+                            </div>
+                        </div>
+                        
+                        <div class="form__row">
+                            <div class="form__column">
+                                <label for="profile__photo">Profile Photo</label>
+                                <input id="profile__photo" type="file" />
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div id="person__new__contactinformations">
+                    <div :id="'person__new__contactinformation-'+contact" v-for="(contact,index) in contacts">
                         <fieldset>
-                            <legend>Basic Information</legend>
-                            <label for="firstname">Firstname</label>
-                            <input id="firstname" type="text" placeholder="First Name" />
+                            <legend>Contact Information</legend>
+                            <div class="form__row">
+                                <div class="form__column">
+                                    <label :for="'contactInfoType-'+contact">Contact Type</label>
+                                    <select :id="'contactInfoType-'+contact" v-model="person.contactInfo[index].contactInfoType">
+                                        <option value="" disabled>Select</option>
+                                        <option value="PERSONAL">Personal</option>
+                                        <option value="WORK">Work</option>
+                                        <option value="HOME">Home</option>
+                                    </select>
+                                </div>
+                                <div class="form__column"></div>
+                            </div>
                             
-                            <label for="lastname">Lastname</label>
-                            <input id="lastname" type="text" placeholder="Last Name" />
-
-                            <label for="birthdate">Birth Date</label>
-                            <input id="birthdate" type="date" />
-
-                            <label for="profile__photo">Profile Photo</label>
-                            <input id="profile__photo" type="file" />
+                            <div class="form__row">
+                                <div class="form__column">
+                                    <label :for="'email-'+contact">Email</label>
+                                    <input :id="'email-'+contact" type="email" placeholder="Email" v-model="person.contactInfo[index].email"/>
+                                </div>
+                                <div class="form__column">
+                                    <label :for="'phone-'+contact">Phone</label>
+                                    <input :id="'phone-'+contact" type="tel" placeholder="Phone" v-model="person.contactInfo[index].phoneNumber"/>
+                                </div>
+                            </div>
+                            <span v-if="index !== 0" class="icon" @click="removeContact(index)">-</span>
                         </fieldset>
                     </div>
+                    <span class="icon" @click="addContact">+</span>
+                </div>
+                
+                <div id="person__new__addresses">
+                    <div :id="'person__new__address-'+addr" v-for="(addr,index) in address">
+                        <fieldset>
+                            <legend>Address</legend>
+                            <div class="form__row">
+                                <div class="form__column">
+                                    <label :for="'address-'+addr">Address Type</label>
+                                    <select :id="'address-'+addr" v-model="person.address[index].addressType">
+                                        <option value="HOME">Home</option>
+                                        <option value="WORK">Work</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form__column"></div>
+                            </div>
 
-                    <div id="person__new__contactinformations">
-                        <div :id="'person__new__contactinformation-'+contact" v-for="contact in [1]">
-                            <fieldset>
-                                <legend>Contact Information</legend>
-    
-                                <label :for="'contactInfoType-'+contact">Contact Info Type</label>
-                                <select :id="'contactInfoType-'+contact">
-                                    <option value="PERSONAL">Personal</option>
-                                    <option value="WORK">Work</option>
-                                    <option value="HOME">Home</option>
-                                </select>
-    
-                                <label :for="'email-'+contact">Email</label>
-                                <input :id="'email-'+contact" type="email" placeholder="Email" />
-                                
-                                <label :for="'phone-'+contact">Phone</label>
-                                <input :id="'phone-'+contact" type="tel" placeholder="Phone" />    
-                            </fieldset>
-                        </div>
-                        <span class="icon">+</span>
-                    </div>
-                    
-                    <div id="person__new__addresses">
-                        <div :id="'person__new__address-'+addr" v-for="addr in [1]">
-                            <fieldset>
-                                <legend>Address</legend>
-                                <label :for="'address-'+addr">Address Type</label>
-                                <select :id="'address-'+addr">
-                                    <option value="HOME">Home</option>
-                                    <option value="WORK">Work</option>
-                                    <option value="OTHER">Other</option>
-                                </select>
-    
-                                <label :for="'street-'+addr">Street</label>
-                                <input :id="'street-'+addr" type="text" placeholder="Street" />
-    
-                                <label :for="'city-'+addr">City</label>
-                                <input :id="'city-'+addr" type="text" placeholder="City" />
-    
-                                <label :for="'state-'+addr">State</label>
-                                <input :id="'state-'+addr" type="text" placeholder="State" />
-    
-                                <label :for="'zip-'+addr">Zip</label>
-                                <input :id="'zip-'+addr" type="text" placeholder="Zip" />
-    
-                                <label :for="'country-'+addr">Country</label>
-                                <input :id="'country-'+addr" type="text" placeholder="Country" />
-                            </fieldset>
-                                 
+                            <div class="form__row">
+                                <div class="form__column">
+                                    <label :for="'country-'+addr">Country</label>
+                                    <input :id="'country-'+addr" type="text" placeholder="Country" v-model="person.address[index].country"/>
+                                </div>
+                                <div class="form__column">
+                                    <label :for="'zip-'+addr">Zip</label>
+                                    <input :id="'zip-'+addr" type="text" placeholder="Zip" v-model="person.address[index].zipCode"/>
+                                </div>
+                            </div>
 
-                        </div>
-                        <span class="icon">+</span>
-                    </div>
-                    
-                    
-                    <div id="person__new__socialmedia">
-                        <div id="person__new__social" v-for="social in [1]">
-                            <fieldset>
-                                <legend>Social Media</legend>
-                                <label :for="'socialType-'+social">Platform</label>
-                                <select :id="'socialType-'+social">
-                                    <option value="FACEBOOK">Facebook</option>
-                                    <option value="TWITTER">Twitter</option>
-                                    <option value="INSTAGRAM">Instagram</option>
-                                    <option value="LINKEDIN">LinkedIn</option>
-                                    <option value="OTHER">Other</option>
-                                </select>
-    
-                                <label :for="'social-'+social">Handle</label>
-                                <input :id="'social-'+social" type="text" placeholder="Social" />
-                            </fieldset>
-                        </div>
-                        <span class="icon">+</span>
-                    </div>
+                            <div class="form__row">
+                                <div class="form__column">
+                                    <label :for="'state-'+addr">State:</label>
+                                    <input :id="'state-'+addr" type="text" placeholder="State" v-model="person.address[index].state"/>
+                                </div>
+                                <div class="form__column">
+                                    <label :for="'city-'+addr">City</label>
+                                    <input :id="'city-'+addr" type="text" placeholder="City" v-model="person.address[index].city"/>
+                                </div>
+                            </div>
 
-                    <div id="person__new__submit">
-                        <button type="submit">Save</button>
-                        <button type="reset">Reset</button>
+                            <div class="form__row">
+                                <div class="form__column">
+                                    <label :for="'street-'+addr">Street</label>
+                                    <input :id="'street-'+addr" type="text" placeholder="Street" v-model="person.address[index].street"/>
+                                </div>
+                                <div class="form__column"></div>
+                            </div>
+                            <span v-if="index !== 0" class="icon" @click="removeAddress(index)">-</span>
+                        </fieldset>
+                        
                     </div>
-                </form>
-            </div>
+                    <span class="icon" @click="addAddress">+</span>
+                </div>
+                
+                
+                <div id="person__new__socialmedia">
+                    <div id="person__new__social" v-for="(social,index) in socialmedia">
+                        <fieldset>
+                            <legend>Social Media</legend>
+                            <div class="form__row">
+                                <div class="form__column">
+                                    <label :for="'socialType-'+social">Platform</label>
+                                    <select :id="'socialType-'+social" v-model="person.socialMediaAccount[index].platform">
+                                        <option value="FACEBOOK">Facebook</option>
+                                        <option value="TWITTER">Twitter</option>
+                                        <option value="INSTAGRAM">Instagram</option>
+                                        <option value="LINKEDIN">LinkedIn</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form__column">
+                                    <label :for="'social-'+social">Handle</label>
+                                    <input :id="'social-'+social" type="text" placeholder="Social" v-model="person.socialMediaAccount[index].handle" />
+                                </div>
+                            </div>
+                            <span v-if="index !== 0" class="icon" @click="removeSocialMedia(index)">-</span>
+                        </fieldset>
+                    </div>
+                    <span class="icon" @click="addSocialMedia">+</span>
+                </div>
 
-            <div id="person__all"></div>
+                <div id="person__new__submit">
+                    <button type="submit">Save</button>
+                    <button type="reset">Reset</button>
+                </div>
+            </form>
         </div>
-        
-        
-    </div>
+    </template>
+    
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        const { createApp, ref } = Vue
+        const { createApp, ref, shallowRef } = Vue
+        const apiHOST = 'http://localhost:8080'
+        const New = {
+            template: '#new__person__template',
+            props: [],
+            emits: [],
+            setup() {
+                const contacts = ref([1])
+                const address = ref([1])
+                const socialmedia = ref([1])
+                const person = ref({contactInfo: [{}], address: [{}], socialMediaAccount: [{}]})
+                
+                const addContact = () => {
+                    contacts.value.push(contacts.value.length);
+                    person.value.contactInfo.push({});
+                }
+                
+                const removeContact = (index) => {
+                    contacts.value.splice(index, 1);
+                    person.value.contactInfo.splice(index, 1);
+                }
+                
+                const addAddress = () => {
+                    address.value.push(address.value.length);
+                    person.value.address.push({});
+                }
+                
+                const removeAddress = (index) => {
+                    address.value.splice(index, 1);
+                    person.value.address.splice(index, 1);
+                }
+                
+                const addSocialMedia = () => {
+                    socialmedia.value.push(socialmedia.value.length);
+                    person.value.socialMediaAccount.push({});
+                }
+                
+                const removeSocialMedia = (index) => {
+                    socialmedia.value.splice(index, 1);
+                    person.value.socialMediaAccount.splice(index, 1);
+                }
 
+                const savePerson = () => {
+                    person.value.contactInfo = person.value.contactInfo.filter((contact) => Object.keys(contact).length > 0)
+                    person.value.address = person.value.address.filter((addr) => Object.keys(addr).length > 0 )
+                    person.value.socialMediaAccount = person.value.socialMediaAccount.filter((social) => Object.keys(social).length > 0 )
+                    console.log(person.value)
+
+                    fetch(`${apiHOST}/persons`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(person.value)
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+                }
+
+                return {
+                    contacts, address, socialmedia, person, addContact, removeContact, addAddress, removeAddress, addSocialMedia, removeSocialMedia, savePerson
+                }
+            }
+        }
+
+        const All = {
+            template: '#all__person__template',
+            props: [],
+            emits: [],
+            setup() {
+                return {
+
+                }
+            }
+        }
+        
         createApp({
             setup() {
-            const title = ref('Person Administration')
-            return {
-                title
-            }
-            }
+                const title = ref('Person Administration')
+                const tabs = shallowRef({ All, New})
+                const currentTab = ref('New')
+                
+                return {
+                    title, tabs, currentTab
+                }
+            },
+            components: { All, New }
         }).mount('#app')
     </script>
     
