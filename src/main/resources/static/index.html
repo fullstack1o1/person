@@ -9,6 +9,7 @@
             margin-left: auto;
             margin-right: auto;
             width: 80%;
+            font-family: Arial, sans-serif;
         }
         
         label {
@@ -93,6 +94,7 @@
             border-left: 1px solid #ccc;
             border-right: 1px solid #ccc;
             border-top: 1px solid #ccc;
+            text-align: center;
         }
 
         .tab:hover {
@@ -123,6 +125,41 @@
             width: 50px;
         }
 
+        table.all__person {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table.all__person tr.all__person__parent__row {
+            border-bottom: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+        }
+
+        table.all__person td {
+            padding: 10px;
+        }
+
+        table.all__person tr.all__person__parent__row:nth-child(odd) {
+            background-color: white;
+        }
+
+        table.all__person tr.all__person__child__row:nth-child(even) {
+            background-color: #f0f0f0;
+        }
+
+        .all__person__heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .all__person__heading input {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 250px;
+            height: 30px;
+        }
+
     </style>
 </head>
 <body>
@@ -131,13 +168,59 @@
         <hr/>
         
         <div id="person__container">
-            <div :class="currentTab === tab ? 'tab tab__selected' : 'tab' " @click="currentTab = tab" v-for="(_ ,tab) in tabs">{{ tab }}</div>
+            <div :class="currentTab === tab ? 'tab tab__selected' : 'tab' " @click="currentTab = tab" v-for="(_ ,tab) in tabs">
+                {{ tab }}
+                <span style='display:block; font-size:25px;' v-if="currentTab===tab">&#9745;</span>
+            </div>
+            
         </div>
         <component :is="tabs[currentTab]"></component>
     </div>
     
     <template id="all__person__template">
-        <h1>Hello</h1>
+        <div class="all__person__heading">
+            <h1>All Person</h1>
+            <input type="text" placeholder="Search Person by Id or Name" />
+        </div>
+        <table class="all__person">
+            <thead></thead>
+            <tbody>
+                <template v-for="(person,index) in persons">
+                    <tr class="all__person__parent__row">
+                        <td>{{ person.id }}</td>
+                        <td>{{ person.firstName }}</td>
+                        <td>{{ person.lastName }}</td>
+                        <td>{{ person.birthDate }}</td>
+                        <td>{{ person.profilePhotoUrl ? person.profilePhotoUrl : "-" }}</td>
+                        <td>
+                            Contact
+                            <small style="display: block; color: blue; cursor: pointer;" @click="() => collapse[index] = !collapse[index]">[view]</small>
+                        </td>
+                        <td>
+                            Address
+                            <small style="display: block; color: blue; cursor: pointer;" @click="() => collapse[index] = !collapse[index]">[view]</small>
+                        </td>
+                        <td>
+                            Social Media
+                            <small style="display: block; color: blue; cursor: pointer;" @click="() => collapse[index] = !collapse[index]">[view]</small>
+                        </td>
+                        <td style="display: flex;gap: 5px;">
+                            <button @click="deletePerson(person.id)">Delete</button>
+                            <button>Edit</button>
+                        </td>
+                    </tr>
+                    <tr class="all__person__child__row" v-if="collapse[index]">
+                        <td colspan="9">
+                            <div style="display: flex;">
+                                <pre>{{ person.contactInfo }}</pre>
+                                <pre>{{ person.address }}</pre>
+                                <pre>{{ person.socialMediaAccount }}</pre>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
     </template>
     
     <template id="new__person__template">
@@ -270,7 +353,7 @@
                                     <label :for="'socialType-'+social">Platform</label>
                                     <select :id="'socialType-'+social" v-model="person.socialMediaAccount[index].platform">
                                         <option value="FACEBOOK">Facebook</option>
-                                        <option value="TWITTER">Twitter</option>
+                                        <option value="X">Twitter</option>
                                         <option value="INSTAGRAM">Instagram</option>
                                         <option value="LINKEDIN">LinkedIn</option>
                                         <option value="OTHER">Other</option>
@@ -297,7 +380,7 @@
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        const { createApp, ref, shallowRef } = Vue
+        const { createApp, ref,toRef, shallowRef, onMounted, watch } = Vue
         const apiHOST = 'http://localhost:8080'
         const New = {
             template: '#new__person__template',
@@ -353,7 +436,10 @@
                         body: JSON.stringify(person.value)
                     })
                     .then(response => response.json())
-                    .then(data => console.log(data))
+                    .then(data => {
+                        console.log(data)
+                        person.value = {contactInfo: [{}], address: [{}], socialMediaAccount: [{}]}
+                    })
                     .catch(error => console.error(error))
                 }
 
@@ -365,11 +451,34 @@
 
         const All = {
             template: '#all__person__template',
-            props: [],
             emits: [],
             setup() {
-                return {
+                const persons = ref([])
+                const collapse = ref({})
+                const isReload = toRef(this, 'isReload')
+                const fetchPersons = () => {
+                    fetch(`${apiHOST}/persons`)
+                    .then(response => response.json())
+                    .then(data => {
+                        persons.value = data
+                    })
+                    .catch(error => console.error(error))
+                }
 
+                const deletePerson = (id) => {
+                    fetch(`${apiHOST}/persons/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => fetchPersons())
+                    .catch(error => console.error(error))
+                }
+                
+                onMounted(() => {
+                    fetchPersons();
+                })
+                
+                return { 
+                    persons, collapse, deletePerson
                 }
             }
         }
@@ -378,7 +487,7 @@
             setup() {
                 const title = ref('Person Administration')
                 const tabs = shallowRef({ All, New})
-                const currentTab = ref('New')
+                const currentTab = ref('All')
                 
                 return {
                     title, tabs, currentTab

@@ -13,5 +13,5 @@ public class SocialMedia {
     Platform platform;
     String handle;
 
-    public enum Platform { FACEBOOK, X, INSTAGRAM }
+    public enum Platform { FACEBOOK, X, INSTAGRAM, LINKEDIN, OTHER }
 }

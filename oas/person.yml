@@ -389,7 +389,12 @@ components:
         id:
           type: integer
         platform:
-          type: string
+          enum:
+            - FACEBOOK
+            - X
+            - INSTAGRAM
+            - LINKEDIN
+            - OTHER
         handle:
           type: string
     
