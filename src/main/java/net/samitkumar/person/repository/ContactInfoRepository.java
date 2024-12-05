@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface ContactInfoRepository extends ListCrudRepository<ContactInfo, Long>, ListPagingAndSortingRepository<ContactInfo, Long> {
     List<ContactInfo> findByPersonId(@Param("personId") Long personId);
     Optional<ContactInfo> findByPersonIdAndId(@Param("personId") Long personId, @Param("id") Long id);
+    List<ContactInfo> findContactInfoByEmailContainingIgnoreCase(@Param("email") String email);
 }

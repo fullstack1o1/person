@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,7 +70,49 @@ public class PersonManagementEntityTest {
                             .forEach(System.out::println);
 
                     //Person(id=1, firstName=John, lastName=Doe, birthDate=2024-10-27, profilePhotoUrl=/home/photo/p1.png, address=[Address(id=1, type=HOME, personId=1, street=Khau Gali, city=Delhi, state=UP, zipCode=700000, country=India)], createdAt=2024-10-27T22:49:38.025661, updatedAt=2024-10-27T22:49:38.025661)
-                }
+                },
+                () -> {
+                    personRepository.saveAll(List.of(
+                            Person.builder()
+                                    .firstName("Jane")
+                                    .lastName("Doe")
+                                    .birthDate(LocalDate.now())
+                                    .contactInfo(Set.of(
+                                            ContactInfo.builder()
+                                                    .contactInfoType(ContactInfo.ContactInfoType.PERSONAL)
+                                                    .email("jane@no-reply.net")
+                                                    .phoneNumber("31323334")
+                                                    .build()
+                                            )
+                                    )
+                                    .build(),
+                            Person.builder().firstName("Balaji")
+                                    .lastName("Kumar")
+                                    .birthDate(LocalDate.now())
+                                    .contactInfo(Set.of(
+                                                    ContactInfo.builder()
+                                                            .contactInfoType(ContactInfo.ContactInfoType.PERSONAL)
+                                                            .email("balaji@no-reply.net")
+                                                            .phoneNumber("313211111")
+                                                            .build()
+                                            )
+                                    ).build(),
+                            Person.builder().firstName("Bru")
+                                    .lastName("Kho")
+                                    .birthDate(LocalDate.now())
+                                    .contactInfo(Set.of(
+                                                    ContactInfo.builder()
+                                                            .contactInfoType(ContactInfo.ContactInfoType.PERSONAL)
+                                                            .email("brkho@no-reply.net")
+                                                            .phoneNumber("31323334")
+                                                            .build()
+                                            )
+                                    ).build()
+                    ));
+                },
+                () -> personRepository.findPersonByIdIn(List.of(1L,2L,3L)).forEach(System.out::println),
+                () -> personRepository.findPersonByFirstNameOrLastNameContainingIgnoreCase("John", "Doe").forEach(System.out::println)
+
         );
     }
 

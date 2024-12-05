@@ -61,4 +61,8 @@ public class ContactInfoService {
     public Mono<Void> deleteContactInfo(long personId, long contactInfoId) {
         return Mono.fromRunnable(() -> contactInfoRepository.findByPersonIdAndId(personId, contactInfoId).ifPresent(contactInfoRepository::delete));
     }
+
+    public Mono<List<ContactInfo>> searchContactInfoByEmail(String s) {
+        return Mono.fromCallable(() -> contactInfoRepository.findContactInfoByEmailContainingIgnoreCase(s));
+    }
 }

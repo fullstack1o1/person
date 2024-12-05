@@ -95,6 +95,28 @@ paths:
         '404':
           description: Person not found
 
+  /persons/search:
+    get:
+      summary: Search for persons by name
+      parameters:
+        - in: query
+          name: query
+          required: true
+          example: |
+            name:John
+            id:1
+            email:a@no-reply.net
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of persons matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
   /persons/{personId}/addresses:
     get:
       summary: Get all addresses for a person

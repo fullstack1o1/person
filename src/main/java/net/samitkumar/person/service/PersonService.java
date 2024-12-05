@@ -3,6 +3,7 @@ package net.samitkumar.person.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.samitkumar.person.DataNotFoundException;
+import net.samitkumar.person.entity.ContactInfo;
 import net.samitkumar.person.entity.Person;
 import net.samitkumar.person.model.PersonRequest;
 import net.samitkumar.person.repository.PersonRepository;
@@ -21,6 +22,7 @@ import static net.samitkumar.person.UtilityMapper.addressRequestToSocialMediaEnt
 public class PersonService {
 
     final PersonRepository personRepository;
+    final ContactInfoService contactInfoService;
 
     public Mono<List<Person>> getAllPersons() {
         return Mono.fromCallable(personRepository::findAll);
@@ -84,5 +86,20 @@ public class PersonService {
 
     public Mono<Void> deletePerson(long personId) {
         return Mono.fromRunnable(() -> personRepository.deleteById(personId));
+    }
+
+    public Mono<List<Person>> searchPersonByName(String s) {
+        return Mono.fromCallable(() -> personRepository.findPersonByFirstNameAndLastNameContainingIgnoreCase(s, s));
+    }
+
+    public Mono<List<Person>> searchPersonById(long l) {
+        return getPerson(l).map(List::of);
+    }
+
+    public Mono<List<Person>> searchPersonByEmail(String s) {
+        return contactInfoService
+                .searchContactInfoByEmail(s)
+                .map(contactInfos -> contactInfos.stream().map(ContactInfo::getPersonId).toList())
+                .map(personRepository::findPersonByIdIn);
     }
 }

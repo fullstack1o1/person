@@ -25,6 +25,7 @@ public class PersonRouter {
                 .path("/persons", personBuilder -> personBuilder
                         .GET("", personHandler::getAllPersons)
                         .POST("", accept(MediaType.APPLICATION_JSON), personHandler::createPerson)
+                        .GET("/search", personHandler::searchPerson)
                         .GET("/{personId}", personHandler::getPerson)
                         .PUT("/{personId}", personHandler::updatePerson)
                         .PATCH("/{personId}", personHandler::partialUpdatePerson)

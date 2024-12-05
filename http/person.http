@@ -21,7 +21,12 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "contactInfo":[],
+  "contactInfo":[
+    {
+      "contactInfoType": "HOME",
+      "email": "rkts@no-reply.net"
+    }
+  ],
   "address":[],
   "socialMediaAccount":[
     {
@@ -35,7 +40,35 @@ Accept: application/json
 }
 
 ###
+POST {{HOST}}/persons
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactInfo":[
+    {
+      "contactInfoType": "HOME",
+      "email": "rb@no-reply.net"
+    }
+  ],
+  "address":[],
+  "socialMediaAccount":[],
+  "firstName":"Raju babu",
+  "lastName":"K",
+  "birthDate":"2022-06-11"
+}
+
+###
 GET {{HOST}}/persons/1
+
+###
+GET {{HOST}}/persons/search?query=name:D
+
+###
+GET {{HOST}}/persons/search?query=id:1
+
+###
+GET {{HOST}}/persons/search?query=email:r
 
 ###
 PUT {{HOST}}/persons/1
