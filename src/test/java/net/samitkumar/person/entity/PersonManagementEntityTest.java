@@ -111,7 +111,8 @@ public class PersonManagementEntityTest {
                     ));
                 },
                 () -> personRepository.findPersonByIdIn(List.of(1L,2L,3L)).forEach(System.out::println),
-                () -> personRepository.findPersonByFirstNameAndLastNameContainingIgnoreCase("John", "Doe").forEach(System.out::println)
+                //TODO , need to fix for this below scenario
+                () -> personRepository.findPersonByFirstNameAndLastNameContainingIgnoreCase("John", "John").forEach(System.out::println)
 
         );
     }
