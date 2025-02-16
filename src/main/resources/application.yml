@@ -8,6 +8,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/person
     username: root
     password: root
+  flyway:
+    enabled: false
+    password: ${spring.datasource.password}
+    user: ${spring.datasource.username}
+    url: ${spring.datasource.url}
 
 logging:
   level:
