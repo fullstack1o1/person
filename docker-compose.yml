@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: person
+  person:
+    image: ghcr.io/fullstack1o1/person:160220252033
+    ports:
+      - "8080:8080"
+    restart: on-failure:3
+    environment:
+      spring.datasource.url: jdbc:postgresql://db:5432/person
+      spring.datasource.username: root
+      spring.datasource.password: example
+      spring.flyway.enabled: true
