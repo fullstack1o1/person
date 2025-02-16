@@ -111,7 +111,7 @@ public class PersonManagementEntityTest {
                     ));
                 },
                 () -> personRepository.findPersonByIdIn(List.of(1L,2L,3L)).forEach(System.out::println),
-                () -> personRepository.findPersonByFirstNameOrLastNameContainingIgnoreCase("John", "Doe").forEach(System.out::println)
+                () -> personRepository.findPersonByFirstNameAndLastNameContainingIgnoreCase("John", "Doe").forEach(System.out::println)
 
         );
     }
