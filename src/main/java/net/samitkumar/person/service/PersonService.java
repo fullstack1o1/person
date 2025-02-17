@@ -10,7 +10,9 @@ import net.samitkumar.person.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static net.samitkumar.person.UtilityMapper.addressRequestToAddressEntityMapper;
 import static net.samitkumar.person.UtilityMapper.addressRequestToContactInfoMapper;
@@ -89,7 +91,7 @@ public class PersonService {
     }
 
     public Mono<List<Person>> searchPersonByName(String s) {
-        return Mono.fromCallable(() -> personRepository.findPersonByFirstNameAndLastNameContainingIgnoreCase(s, s));
+        return Mono.fromCallable(() -> personRepository.findPersonByFirstNameOrLastNameContainingIgnoreCase(s,s));
     }
 
     public Mono<List<Person>> searchPersonById(long l) {

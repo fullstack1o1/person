@@ -2,6 +2,7 @@ package net.samitkumar.person.entity;
 
 import net.samitkumar.person.TestcontainersConfiguration;
 import net.samitkumar.person.repository.PersonRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,8 +10,10 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Import(TestcontainersConfiguration.class)
@@ -112,8 +115,8 @@ public class PersonManagementEntityTest {
                 },
                 () -> personRepository.findPersonByIdIn(List.of(1L,2L,3L)).forEach(System.out::println),
                 //TODO , need to fix for this below scenario
-                () -> personRepository.findPersonByFirstNameAndLastNameContainingIgnoreCase("John", "John").forEach(System.out::println)
-
+                () -> personRepository.findPersonByFirstNameAndLastNameContainingIgnoreCase("John", "John").forEach(System.out::println),
+                () -> personRepository.findPersonByFirstNameOrLastNameContainingIgnoreCase("John", "John").forEach(System.out::println)
         );
     }
 
