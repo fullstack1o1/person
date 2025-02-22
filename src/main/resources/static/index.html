@@ -264,7 +264,7 @@
                             <div class="form__row">
                                 <div class="form__column">
                                     <label :for="'contactInfoType-'+contact">Contact Type</label>
-                                    <select :id="'contactInfoType-'+contact" v-model="person.contactInfo[index]?.contactInfoType">
+                                    <select :id="'contactInfoType-'+contact" v-model="person.contactInfo[index].contactInfoType">
                                         <option value="" disabled>Select</option>
                                         <option value="PERSONAL">Personal</option>
                                         <option value="WORK">Work</option>
@@ -380,7 +380,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
         const { createApp, ref,toRef, shallowRef, onMounted, watch } = Vue
-        const apiHOST = ''
+        const apiHOST = location.hostname === 'localhost' ? 'http://localhost:8080' : ''
         const New = {
             template: '#new__person__template',
             props: [],
