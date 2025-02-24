@@ -25,4 +25,7 @@ jobs:
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
         with:
+          containerAppName: "person-app"
+          resourceGroup: "learn-resources01"
+          containerAppEnvironment: "learn-env"
           imageToDeploy: ghcr.io/fullstack1o1/person:${{ inputs.imageVersion }}
