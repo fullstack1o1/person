@@ -14,14 +14,15 @@ permissions:
   id-token: write
 
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Log in to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+  on-demand-deployent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Build and deploy Container App
-      uses: azure/container-apps-deploy-action@v1
-      with:
-        imageToDeploy: ghcr.io/fullstack1o1/person:${{ inputs.imageVersion }}
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: ghcr.io/fullstack1o1/person:${{ inputs.imageVersion }}
