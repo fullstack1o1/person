@@ -168,10 +168,12 @@
         <hr/>
         
         <div id="person__container">
-            <div :class="currentTab === tab ? 'tab tab__selected' : 'tab' " @click="currentTab = tab" v-for="(_ ,tab) in tabs">
+            <div :class="currentTab === tab ? 'tab tab__selected' : 'tab'" 
+                 @click="currentTab = tab" 
+                 v-for="(component, tab) in tabs" 
+                 :key="tab">
                 {{ tab }}
             </div>
-            
         </div>
         <component :is="tabs[currentTab]"></component>
     </div>
@@ -179,31 +181,46 @@
     <template id="all__person__template">
         <div class="all__person__heading">
             <h1>All Person</h1>
-            <input type="text" placeholder="Search Person by Id or Name" />
+            <input type="text" placeholder="Search Person by Id or Name" v-model="searchQuery" />
         </div>
         <table class="all__person">
-            <thead></thead>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Birth Date</th>
+                    <th>Profile Photo</th>
+                    <th>Contact</th>
+                    <th>Address</th>
+                    <th>Social Media</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
             <tbody>
-                <template v-for="(person,index) in persons">
+                <template v-for="(person, index) in filteredPersons" :key="person.id">
                     <tr class="all__person__parent__row">
                         <td>{{ person.id }}</td>
                         <td>{{ person.firstName }}</td>
                         <td>{{ person.lastName }}</td>
                         <td>{{ person.birthDate }}</td>
-                        <td>{{ person.profilePhotoUrl ? person.profilePhotoUrl : "-" }}</td>
+                        <td>{{ person.profilePhotoUrl || '-' }}</td>
                         <td>
                             Contact
-                            <small style="display: block; color: blue; cursor: pointer;" @click="() => collapse[index] = !collapse[index]">[view]</small>
+                            <small style="display: block; color: blue; cursor: pointer;" 
+                                   @click="toggleCollapse(index)">[view]</small>
                         </td>
                         <td>
                             Address
-                            <small style="display: block; color: blue; cursor: pointer;" @click="() => collapse[index] = !collapse[index]">[view]</small>
+                            <small style="display: block; color: blue; cursor: pointer;" 
+                                   @click="toggleCollapse(index)">[view]</small>
                         </td>
                         <td>
                             Social Media
-                            <small style="display: block; color: blue; cursor: pointer;" @click="() => collapse[index] = !collapse[index]">[view]</small>
+                            <small style="display: block; color: blue; cursor: pointer;" 
+                                   @click="toggleCollapse(index)">[view]</small>
                         </td>
-                        <td style="display: flex;gap: 5px;">
+                        <td style="display: flex; gap: 5px;">
                             <button @click="deletePerson(person.id)">Delete</button>
                             <button>Edit</button>
                         </td>
@@ -379,8 +396,8 @@
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        const { createApp, ref,toRef, shallowRef, onMounted, watch } = Vue
-        const apiHOST = location.hostname === 'localhost' ? 'http://localhost:8080' : ''
+        const { createApp, ref, toRef, shallowRef, onMounted, watch, computed } = Vue
+        const apiHOST = 'http://localhost:8080'
         const New = {
             template: '#new__person__template',
             props: [],
@@ -403,7 +420,7 @@
                 
                 const addAddress = () => {
                     address.value.push(address.value.length);
-                    person.value.address.push({});
+                    person.value.address.push({ addressType: '', country: '', zipCode: '', state: '', city: '', street: '' });
                 }
                 
                 const removeAddress = (index) => {
@@ -422,10 +439,10 @@
                 }
 
                 const savePerson = () => {
-                    person.value.contactInfo = person.value.contactInfo.filter((contact) => Object.keys(contact).length > 0)
-                    person.value.address = person.value.address.filter((addr) => Object.keys(addr).length > 0 )
-                    person.value.socialMediaAccount = person.value.socialMediaAccount.filter((social) => Object.keys(social).length > 0 )
-                    console.log(person.value)
+                    person.value.contactInfo = person.value.contactInfo.filter((contact) => Object.keys(contact).length > 0);
+                    person.value.address = person.value.address ? person.value.address.filter((addr) => Object.keys(addr).length > 0) : [];
+                    person.value.socialMediaAccount = person.value.socialMediaAccount.filter((social) => Object.keys(social).length > 0);
+                    console.log(person.value);
 
                     fetch(`${apiHOST}/persons`, {
                         method: 'POST',
@@ -436,10 +453,10 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
-                        person.value = {contactInfo: [{}], address: [{}], socialMediaAccount: [{}]}
+                        console.log(data);
+                        person.value = {contactInfo: [{}], address: [{}], socialMediaAccount: [{}]};
                     })
-                    .catch(error => console.error(error))
+                    .catch(error => console.error(error));
                 }
 
                 return {
@@ -450,35 +467,47 @@
 
         const All = {
             template: '#all__person__template',
-            emits: [],
             setup() {
-                const persons = ref([])
-                const collapse = ref({})
-                const isReload = toRef(this, 'isReload')
+                const persons = ref([]);
+                const collapse = ref({});
+                const searchQuery = ref('');
+                
                 const fetchPersons = () => {
                     fetch(`${apiHOST}/persons`)
-                    .then(response => response.json())
-                    .then(data => {
-                        persons.value = data
-                    })
-                    .catch(error => console.error(error))
-                }
+                        .then(response => response.json())
+                        .then(data => {
+                            persons.value = data;
+                        })
+                        .catch(error => console.error(error));
+                };
 
                 const deletePerson = (id) => {
                     fetch(`${apiHOST}/persons/${id}`, {
                         method: 'DELETE'
                     })
-                    .then(response => fetchPersons())
-                    .catch(error => console.error(error))
-                }
-                
+                    .then(() => fetchPersons())
+                    .catch(error => console.error(error));
+                };
+
+                const toggleCollapse = (index) => {
+                    collapse.value[index] = !collapse.value[index];
+                };
+
+                const filteredPersons = computed(() => {
+                    return persons.value.filter(person => 
+                        person.id.toString().includes(searchQuery.value) || 
+                        person.firstName.toLowerCase().includes(searchQuery.value.toLowerCase()) || 
+                        person.lastName.toLowerCase().includes(searchQuery.value.toLowerCase())
+                    );
+                });
+
                 onMounted(() => {
                     fetchPersons();
-                })
-                
+                });
+
                 return { 
-                    persons, collapse, deletePerson
-                }
+                    persons, collapse, searchQuery, deletePerson, toggleCollapse, filteredPersons 
+                };
             }
         }
         
